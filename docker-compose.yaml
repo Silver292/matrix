@@ -2,21 +2,21 @@ version: '3.8'
 
 configs:
   nginx_config:
-    file: ./configurations/nginx/nginx.conf
+    file: configurations/nginx/nginx.conf
   nginx_synapse_client_well_known:
-    file: ./configurations/nginx/index.html
+    file: configurations/nginx/index.html
 
   synapse_db_config:
-    file: ./configurations/synapse/db.yaml
+    file: configurations/synapse/db.yaml
   synapse_email_config:
-    file: ./configurations/synapse/email.yaml
+    file: configurations/synapse/email.yaml
   synapse_oidc_config:
-    file: ./configurations/synapse/oidc.yaml
+    file: configurations/synapse/oidc.yaml
   synapse_homeserver:
-    file: ./configurations/synapse/homeserver.yaml
+    file: configurations/synapse/homeserver.yaml
 
   synapse_mas_config:
-    file: ./configurations/synapse-mas/config.yaml
+    file: configurations/synapse-mas/config.yaml
 
 services:
   postgres-synapse:
