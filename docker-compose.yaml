@@ -1,23 +1,5 @@
 version: '3.8'
 
-configs:
-  nginx_config:
-    file: ${PWD}/configurations/nginx/nginx.conf
-  nginx_synapse_client_well_known:
-    file: ${PWD}/configurations/nginx/index.html
-
-  synapse_db_config:
-    file: ${PWD}/configurations/synapse/db.yaml
-  synapse_email_config:
-    file: ${PWD}/configurations/synapse/email.yaml
-  synapse_oidc_config:
-    file: ${PWD}/configurations/synapse/oidc.yaml
-  synapse_homeserver:
-    file: ${PWD}/configurations/synapse/homeserver.yaml
-
-  synapse_mas_config:
-    file: ${PWD}/configurations/synapse-mas/config.yaml
-
 services:
   postgres-synapse:
     image: postgres:15
@@ -54,18 +36,13 @@ services:
     restart: unless-stopped
     environment:
       SYNAPSE_CONFIG_PATH: /data/config
-    configs:
-      - source: synapse_homeserver
-        target: /data/config/homeserver.yaml
-      - source: synapse_db_config
-        target: /data/config/db.yaml
-      - source: synapse_oidc_config
-        target: /data/config/oidc.yaml
-      - source: synapse_email_config
-        target: /data/config/email.yaml
     volumes:
       - /data/matrix/synapse/data:/data
       - /data/matrix/synapse/media:/media_store
+      - ./configurations/synapse/homeserver.yaml:/data/config/homeserver.yaml
+      - ./configurations/synapse/db.yaml:/data/config/db.yaml
+      - ./configurations/synapse/oidc.yaml:/data/config/oidc.yaml
+      - ./configurations/synapse/email.yaml:/data/config/email.yaml
     depends_on:
       - postgres-synapse
       - synapse-mass-authentication-service
@@ -89,20 +66,17 @@ services:
   synapse-mass-authentication-service:
     image: ghcr.io/element-hq/matrix-authentication-service:latest
     restart: unless-stopped
-    configs:
-      - source: synapse_mas_config
-        target: ./config.yaml
+    volumes:
+      - ./configurations/synapse-mas/config.yaml:/config.yaml
     depends_on:
       - postgres-synapse-mas
 
   nginx:
     image: nginx:latest
     restart: unless-stopped
-    configs:
-      - source: nginx_config
-        target: /etc/nginx/conf.d/default.conf
-      - source: nginx_synapse_client_well_known
-        target: /usr/share/nginx/html/.well-known/matrix/client/index.html
+    volumes:
+      - ./configurations/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./configurations/nginx/index.html:/usr/share/nginx/html/.well-known/matrix/client/index.html
     #ports:
     #  - "8888:80"
 
@@ -133,3 +107,8 @@ services:
   #     apk add --no-cache bash coreutils && \
   #     echo '0 2 * * * /backup/backup.sh' | crontab - && \
   #     crond -f
+
+volumes:
+  postgres-synapse:
+  postgres-sliding-sync:
+  postgres-synapse-mas:
