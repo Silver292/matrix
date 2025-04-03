@@ -66,7 +66,12 @@ function populateFile(templateFile, outFile) {
 
 function populateConfigsFromEnv() {
   for (const template of templates) {
-    populateFile(template.templateFile, template.outFile);
+    try {
+      populateFile(template.templateFile, template.outFile);
+      console.log(`Populated file ${template.outFile}`);
+    } catch(e) {
+      console.error(e)
+    }
   }
 }
 
