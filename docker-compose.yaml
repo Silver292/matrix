@@ -2,21 +2,21 @@ version: '3.8'
 
 configs:
   nginx_config:
-    file: ./configurations/nginx/nginx.conf
+    file: ${PWD}/configurations/nginx/nginx.conf
   nginx_synapse_client_well_known:
-    file: ./configurations/nginx/index.html
+    file: ${PWD}/configurations/nginx/index.html
 
   synapse_db_config:
-    file: ./configurations/synapse/db.yaml
+    file: ${PWD}/configurations/synapse/db.yaml
   synapse_email_config:
-    file: ./configurations/synapse/email.yaml
+    file: ${PWD}/configurations/synapse/email.yaml
   synapse_oidc_config:
-    file: ./configurations/synapse/oidc.yaml
+    file: ${PWD}/configurations/synapse/oidc.yaml
   synapse_homeserver:
-    file: ./configurations/synapse/homeserver.yaml
+    file: ${PWD}/configurations/synapse/homeserver.yaml
 
   synapse_mas_config:
-    file: ./configurations/synapse-mas/config.yaml
+    file: ${PWD}/configurations/synapse-mas/config.yaml
 
 services:
   postgres-synapse:
@@ -28,7 +28,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_SYNAPSE_PASSWORD}
     volumes:
       - postgres-synapse:/var/lib/postgresql/data
-  
+
   postgres-sliding-sync:
     image: postgres:15
     restart: unless-stopped
@@ -38,7 +38,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_SLIDING_SYNC_PASSWORD}
     volumes:
       - postgres-sliding-sync:/var/lib/postgresql/data
-  
+
   postgres-synapse-mas:
     image: postgres:15
     restart: unless-stopped
@@ -82,7 +82,7 @@ services:
     #  - "8009:8009"
     environment:
       SYNCV3_SERVER: ${SYNAPSE_FQDN}
-      SYNCV3_DB: "host=postgres-sliding-sync sslmode=disable port=5432 dbname=${POSTGRES_SLIDING_SYNC_DB} user=${POSTGRES_SLIDING_SYNC_USER} password=${POSTGRES_SLIDING_SYNC_PASSWORD}"
+      SYNCV3_DB: 'host=postgres-sliding-sync sslmode=disable port=5432 dbname=${POSTGRES_SLIDING_SYNC_DB} user=${POSTGRES_SLIDING_SYNC_USER} password=${POSTGRES_SLIDING_SYNC_PASSWORD}'
       SYNCV3_SECRET: ${SLIDING_SYNC_SECRET}
       SYNCV3_BINDADDR: 127.0.0.1:8009
 
